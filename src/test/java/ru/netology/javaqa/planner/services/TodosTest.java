@@ -3,6 +3,9 @@ package ru.netology.javaqa.planner.services;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 public class TodosTest {
     @Test
@@ -27,7 +30,7 @@ public class TodosTest {
 
         Task[] expected = {simpleTask, epic, meeting};
         Task[] actual = todos.findAll();
-        Assertions.assertArrayEquals(expected, actual);
+        assertArrayEquals(expected, actual);
     }
 
 
@@ -46,10 +49,13 @@ public class TodosTest {
         todos.add(meeting);
 
 
+        Task[] expected = new Task[]{meeting};
         Task[] result = todos.search("Project");
-        Assertions.assertEquals(1, result.length);
-        Assertions.assertEquals(meeting, result[0]);
+
+        assertArrayEquals(expected, result);
+
     }
+
 
     @Test
     public void testSearchNoMatch() {
@@ -64,28 +70,37 @@ public class TodosTest {
         todos.add(meeting);
 
         Task[] result = todos.search("Vacation");
-        Assertions.assertEquals(0, result.length);
+        assertEquals(0, result.length);
+        Task[] expected = {};
+        assertArrayEquals(expected, result);
     }
+
 
     @Test
     public void testSearchEmptyTodos() {
         Todos todos = new Todos();
         Task[] result = todos.search("Project");
-        Assertions.assertEquals(0, result.length);
+        assertEquals(0, result.length);
+        Task[] expected = {};
+        assertArrayEquals(expected, result);
     }
+
 
     @Test
     public void testEqualsSameObject() {
-        Task task1 = new SimpleTask(1, "Task 1");
-        Assertions.assertTrue(task1.equals(task1));
+        Task[] tasks1 = {new SimpleTask(1, "Task 1")};
+        Task[] tasks2 = {new SimpleTask(1, "Task 1")};
+        assertArrayEquals(tasks1, tasks2);
     }
+
 
     @Test
     public void testEqualsEqualTasks() {
-        Task task1 = new SimpleTask(1, "Task 1");
-        Task task2 = new SimpleTask(1, "Task 1");
-        Assertions.assertTrue(task1.equals(task2));
+        Task[] tasks1 = {new SimpleTask(1, "Task 1")};
+        Task[] tasks2 = {new SimpleTask(1, "Task 1")};
+        assertArrayEquals(tasks1, tasks2);
     }
+
 
     @Test
     public void testEqualsDifferentTasks() {
@@ -108,30 +123,34 @@ public class TodosTest {
         Assertions.assertEquals(task1.hashCode(), task2.hashCode());
     }
 
+
     @Test
     public void testConstructorAndGetId() {
         Task task = new SimpleTask(1, "Task 1");
-        Assertions.assertEquals(1, task.getId());
+        assertEquals(1, task.getId());
     }
 
 
     @Test
     public void testGetTopic() {
         Meeting meeting = new Meeting(1, "Project Review", "Project X", "Tomorrow");
-        Assertions.assertEquals("Project Review", meeting.getTopic());
+        assertEquals("Project Review", meeting.getTopic());
     }
+
 
     @Test
     public void testGetProject() {
         Meeting meeting = new Meeting(1, "Project Review", "Project X", "Tomorrow");
-        Assertions.assertEquals("Project X", meeting.getProject());
+        assertEquals("Project X", meeting.getProject());
     }
+
 
     @Test
     public void testGetStart() {
         Meeting meeting = new Meeting(1, "Project Review", "Project X", "Tomorrow");
-        Assertions.assertEquals("Tomorrow", meeting.getStart());
+        assertEquals("Tomorrow", meeting.getStart());
     }
+
 
     @Test
     public void testGetSubtasks() {
@@ -141,7 +160,7 @@ public class TodosTest {
 
         String[] retrievedSubtasks = epic.getSubtasks();
 
-        Assertions.assertArrayEquals(subtasks, retrievedSubtasks);
+        assertArrayEquals(subtasks, retrievedSubtasks);
     }
 
     @Test
@@ -150,13 +169,52 @@ public class TodosTest {
 
         String retrievedTitle = simpleTask.getTitle();
 
-        Assertions.assertEquals("Buy groceries", retrievedTitle);
+        assertEquals("Buy groceries", retrievedTitle);
     }
+
 
     @Test
     public void testEqualsNullObject() {
         Task task1 = new SimpleTask(1, "Task 1");
         Assertions.assertFalse(task1.equals(null));
+    }
+
+    @Test
+    public void testSearchMultipleTasksMatchingQuery() {
+        // Создание задач и добавление их в менеджер
+        Todos todos = new Todos();
+        SimpleTask simpleTask1 = new SimpleTask(1, "Task 1");
+        SimpleTask simpleTask2 = new SimpleTask(2, "Task 2");
+        todos.add(simpleTask1);
+        todos.add(simpleTask2);
+
+        Task[] result = todos.search("Task");
+
+        assertArrayEquals(new Task[]{simpleTask1, simpleTask2}, result);
+    }
+
+    @Test
+    public void testSearchOneTaskMatchingQuery() {
+
+        Todos todos = new Todos();
+        SimpleTask simpleTask = new SimpleTask(1, "Task");
+        todos.add(simpleTask);
+
+        Task[] result = todos.search("Task");
+
+        assertArrayEquals(new Task[]{simpleTask}, result);
+    }
+
+    @Test
+    public void testSearchNoTasksMatchingQuery() {
+
+        Todos todos = new Todos();
+        SimpleTask simpleTask = new SimpleTask(1, "Task");
+        todos.add(simpleTask);
+
+        Task[] result = todos.search("InvalidQuery");
+
+        assertArrayEquals(new Task[0], result);
     }
 
 

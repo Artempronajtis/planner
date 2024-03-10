@@ -80,8 +80,8 @@ public class TasksTest {
 
 
         Assertions.assertFalse(task.matches("query"));
-        Assertions.assertFalse(task.matches("123")); // проверяем запрос с числами
-        Assertions.assertFalse(task.matches("some text")); // проверяем запрос с текстом
+        Assertions.assertFalse(task.matches("123"));
+        Assertions.assertFalse(task.matches("some text"));
     }
 
 
